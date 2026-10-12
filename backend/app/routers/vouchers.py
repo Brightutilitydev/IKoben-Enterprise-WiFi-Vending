@@ -46,22 +46,19 @@ async def validate_voucher(req: VoucherValidateRequest, db: AsyncSession = Depen
         limit_uptime = (voucher.plan.uptime_mins * 60) if voucher.plan.uptime_mins else None
         
         try:
-            # We are using PIN as both username and password for CHAP compatibility
+            # Attempt to provision on router if directly reachable (e.g. DDNS / VPN / local)
             await router_service.provision_hotspot_user(
                 pin=voucher.pin,
                 limit_bytes=limit_bytes,
                 limit_uptime=limit_uptime,
-                profile="default" # Or map plan rate limits to profile
+                profile="default"
             )
         except Exception as e:
-            # Revert voucher status since router provisioning failed
-            voucher.status = "UNUSED"
-            db.add(voucher)
-            await db.commit()
-            raise HTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="Hotspot router is currently unreachable. Please try again in a moment."
-            )
+            # Router is on-site behind NAT or vouchers are pre-imported into RouterOS.
+            # We allow login to proceed so the client's phone can submit credentials to MikroTik.
+            import logging
+            logging.getLogger(__name__).warning(f"Direct router provisioning skipped ({e}). Continuing with voucher login.")
+
     elif voucher.status == "ACTIVE":
         # Check if MAC matches
         if voucher.mac_address and req.mac_address and voucher.mac_address != req.mac_address:
