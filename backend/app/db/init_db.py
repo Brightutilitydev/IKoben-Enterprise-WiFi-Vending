@@ -7,15 +7,22 @@ from app.core.security import get_password_hash
 
 async def init_db_data():
     async with AsyncSessionLocal() as session:
-        # 1. Seed Admin if none exists
+        # 1. Seed or update Admin
+        import os
+        superadmin_pass = os.getenv("SUPERADMIN_PASSWORD", "Bright@2026")
         res = await session.execute(select(Admin).where(Admin.username == "admin"))
-        if not res.scalars().first():
+        existing_admin = res.scalars().first()
+        if not existing_admin:
             admin = Admin(
                 username="admin",
-                password_hash=get_password_hash("ikoben2026"),
+                password_hash=get_password_hash(superadmin_pass),
                 role="superadmin"
             )
             session.add(admin)
+        else:
+            existing_admin.password_hash = get_password_hash(superadmin_pass)
+            session.add(existing_admin)
+
 
         # 2. Seed Plans if none exist
         res_plans = await session.execute(select(Plan))
