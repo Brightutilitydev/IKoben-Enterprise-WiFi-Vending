@@ -1,13 +1,14 @@
 import PlanSelector from '@/components/PlanSelector';
 import { fetchPlans, fetchContactSettings } from '@/lib/api';
+import { Plan, ContactSetting } from '@/types';
 import { Wifi, Phone, MessageSquare, MapPin, CreditCard } from 'lucide-react';
 
 import { Suspense } from 'react';
 import VoucherLoginForm from '@/components/VoucherLoginForm';
 
 async function PlansSection() {
-  let plans = [];
-  let contact = {
+  let plans: Plan[] = [];
+  let contact: ContactSetting = {
     phone_primary: '',
     phone_secondary: '',
     whatsapp_number: '',

@@ -8,3 +8,13 @@ export interface Plan {
   validity_days?: number;
   rate_limit: string;
 }
+
+export interface ContactSetting {
+  id?: number;
+  phone_primary: string;
+  phone_secondary?: string;
+  whatsapp_number?: string;
+  physical_location?: string;
+  payment_instructions?: string;
+}
+

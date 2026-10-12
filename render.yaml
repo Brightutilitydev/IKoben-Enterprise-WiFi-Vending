@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: ikoben-wifi-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    region: ohio
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_fiDsb1urFq0w@ep-late-mode-b4qr40z6-pooler.c-6.us-east-2.aws.neon.tech/ikoben_wifi?sslmode=require
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: SUPERADMIN_USERNAME
+        value: admin
+      - key: SUPERADMIN_PASSWORD
+        value: ikoben2026
