@@ -19,4 +19,5 @@ services:
       - key: SUPERADMIN_USERNAME
         value: admin
       - key: SUPERADMIN_PASSWORD
-        value: ikoben2026
+        value: Bright@2026
+
