@@ -69,30 +69,41 @@ export default function VoucherLoginForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto text-center space-y-4">
-      <h2 className="text-lg font-semibold text-gray-800">Already have a PIN?</h2>
-      <form onSubmit={handleValidate} className="space-y-2">
-        <div className="flex gap-2">
+    <div className="max-w-md mx-auto text-center space-y-3.5">
+      <div>
+        <h2 className="text-base sm:text-lg font-bold text-gray-900">Have a Voucher PIN?</h2>
+        <p className="text-xs text-gray-500">Enter your access code below to start browsing</p>
+      </div>
+      <form onSubmit={handleValidate} className="space-y-2.5">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input 
             type="text" 
-            placeholder="Enter your Voucher PIN" 
-            className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-center text-lg tracking-widest font-mono uppercase"
+            placeholder="ENTER VOUCHER PIN" 
+            className="w-full sm:flex-1 px-4 py-3 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-center text-base sm:text-lg tracking-wider font-mono uppercase bg-white shadow-xs transition-all"
             maxLength={16}
             value={pin}
             onChange={(e) => setPin(e.target.value)}
             disabled={loading}
             required
+            autoCapitalize="characters"
+            autoCorrect="off"
+            spellCheck={false}
           />
           <button 
             type="submit"
             disabled={loading || !pin.trim()} 
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 py-3 sm:py-2.5 rounded-xl font-bold text-sm tracking-wide disabled:opacity-50 transition-all shadow-xs shrink-0 flex items-center justify-center gap-2"
           >
-            {loading ? '...' : 'Connect'}
+            {loading ? 'Connecting...' : 'Connect Now'}
           </button>
         </div>
-        {error && <p className="text-sm text-red-600 font-medium">{error}</p>}
+        {error && (
+          <div className="p-2.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 font-semibold text-center animate-in fade-in">
+            {error}
+          </div>
+        )}
       </form>
     </div>
   );
+
 }

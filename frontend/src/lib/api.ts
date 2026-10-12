@@ -1,9 +1,15 @@
 import { Plan } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+export const getApiBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+  if (typeof window !== 'undefined') {
+    return `http://${window.location.hostname}:8000/api`;
+  }
+  return 'http://127.0.0.1:8000/api';
+};
 
 export async function fetchPlans(): Promise<Plan[]> {
-  const response = await fetch(`${API_BASE_URL}/plans/`, {
+  const response = await fetch(`${getApiBaseUrl()}/plans/`, {
     cache: 'no-store'
   });
   if (!response.ok) {
@@ -14,7 +20,7 @@ export async function fetchPlans(): Promise<Plan[]> {
 
 export async function fetchContactSettings() {
   try {
-    const response = await fetch(`${API_BASE_URL}/contact/`, {
+    const response = await fetch(`${getApiBaseUrl()}/contact/`, {
       cache: 'no-store'
     });
     if (!response.ok) throw new Error('Failed to fetch contact settings');
@@ -32,7 +38,7 @@ export async function fetchContactSettings() {
 }
 
 export async function validateVoucher(data: { pin: string; mac_address?: string; ip_address?: string; link_login_only?: string }) {
-  const response = await fetch(`${API_BASE_URL}/vouchers/validate`, {
+  const response = await fetch(`${getApiBaseUrl()}/vouchers/validate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -46,7 +52,7 @@ export async function validateVoucher(data: { pin: string; mac_address?: string;
 }
 
 export async function initiatePayment(plan_id: number) {
-  const response = await fetch(`${API_BASE_URL}/payments/initiate`, {
+  const response = await fetch(`${getApiBaseUrl()}/payments/initiate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ plan_id }),
@@ -56,7 +62,7 @@ export async function initiatePayment(plan_id: number) {
 }
 
 export async function checkPaymentStatus(reference: string) {
-  const response = await fetch(`${API_BASE_URL}/payments/${reference}/status`);
+  const response = await fetch(`${getApiBaseUrl()}/payments/${reference}/status`);
   if (!response.ok) throw new Error('Failed to check status');
   return response.json();
 }

@@ -28,28 +28,29 @@ export default function ManualPurchaseModal({ plan, contact, onClose }: ManualPu
   const secTelUrl = contact.phone_secondary ? `tel:${contact.phone_secondary.replace(/[^0-9+]/g, '')}` : null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white relative">
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-4 sm:p-6 text-white relative">
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 text-white/80 hover:text-white bg-black/10 hover:bg-black/20 p-1.5 rounded-full transition-colors"
+            className="absolute top-3.5 right-3.5 text-white/80 hover:text-white bg-black/10 hover:bg-black/20 p-1.5 rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
-          <div className="text-xs uppercase tracking-wider font-semibold text-blue-200 mb-1">
+          <div className="text-[11px] uppercase tracking-wider font-semibold text-blue-200 mb-1">
             Purchase Wi-Fi Voucher
           </div>
-          <h3 className="text-2xl font-bold text-white mb-1">{plan.name}</h3>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-0.5">{plan.name}</h3>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-white">₦{plan.price}</span>
-            <span className="text-sm text-blue-100">one-time access</span>
+            <span className="text-2xl sm:text-3xl font-extrabold text-white">₦{plan.price}</span>
+            <span className="text-xs sm:text-sm text-blue-100">one-time access</span>
           </div>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-5 flex-1">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 flex-1">
+
           {/* Plan Highlights */}
           <div className="bg-blue-50/60 border border-blue-100 rounded-xl p-3.5 grid grid-cols-2 gap-2 text-xs text-gray-700">
             <div className="flex items-center gap-2">

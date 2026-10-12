@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { getApiBaseUrl } from '@/lib/api';
-import { Activity, CreditCard, Tag, Wifi, Box, ShieldBan, Trash2, Check, Plus, Printer, X, Pencil, PhoneCall, MessageSquare, MapPin } from 'lucide-react';
-
+import { Activity, CreditCard, Tag, Wifi, Box, ShieldBan, Trash2, Check, Plus, Printer, X, Pencil, PhoneCall, MessageSquare, MapPin, Menu } from 'lucide-react';
 
 export default function AdminDashboard({ token, onLogout }: { token: string, onLogout: () => void }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState<any>(null);
+
   const [network, setNetwork] = useState<any>(null);
   const [vouchers, setVouchers] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -289,53 +290,107 @@ export default function AdminDashboard({ token, onLogout }: { token: string, onL
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r min-h-screen flex flex-col fixed">
-        <div className="p-6 border-b">
-          <h1 className="text-xl font-bold text-gray-900">IKoben Admin</h1>
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      {/* Mobile Top Header */}
+      <header className="md:hidden bg-white border-b px-4 py-3.5 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-blue-600 rounded-lg text-white">
+            <Wifi className="w-4 h-4" />
+          </div>
+          <span className="font-bold text-gray-900 text-base">IKoben Admin</span>
         </div>
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left ${activeTab === 'dashboard' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
-            <Activity className="w-5 h-5" /> Dashboard
+        <button 
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700 transition-colors"
+          aria-label="Toggle navigation menu"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </header>
+
+      {/* Mobile Backdrop */}
+      {mobileMenuOpen && (
+        <div 
+          onClick={() => setMobileMenuOpen(false)}
+          className="md:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-xs animate-in fade-in"
+        />
+      )}
+
+      {/* Sidebar (Desktop persistent + Mobile slide-out drawer) */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col transition-transform duration-200 ease-in-out md:translate-x-0
+        ${mobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
+      `}>
+        <div className="p-5 border-b flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-blue-600 rounded-xl text-white">
+              <Wifi className="w-5 h-5" />
+            </div>
+            <h1 className="text-base font-bold text-gray-900">IKoben Admin</h1>
+          </div>
+          <button onClick={() => setMobileMenuOpen(false)} className="md:hidden text-gray-500 hover:text-gray-700 p-1">
+            <X className="w-5 h-5" />
           </button>
-          <button onClick={() => setActiveTab('network')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left ${activeTab === 'network' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
-            <Wifi className="w-5 h-5" /> Network
-          </button>
-          <button onClick={() => setActiveTab('vouchers')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left ${activeTab === 'vouchers' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
-            <Tag className="w-5 h-5" /> Vouchers
-          </button>
-          <button onClick={() => setActiveTab('plans')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left ${activeTab === 'plans' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
-            <Box className="w-5 h-5" /> Plans
-          </button>
-          <button onClick={() => setActiveTab('contact')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left ${activeTab === 'contact' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
-            <PhoneCall className="w-5 h-5" /> Reception & Contact
-          </button>
-          <button onClick={() => setActiveTab('transactions')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left ${activeTab === 'transactions' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
-            <CreditCard className="w-5 h-5" /> Ledger
-          </button>
+        </div>
+        <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+          {[
+            { id: 'dashboard', label: 'Dashboard', icon: Activity },
+            { id: 'network', label: 'Network', icon: Wifi },
+            { id: 'vouchers', label: 'Vouchers', icon: Tag },
+            { id: 'plans', label: 'Plans', icon: Box },
+            { id: 'contact', label: 'Reception & Contact', icon: PhoneCall },
+            { id: 'transactions', label: 'Ledger', icon: CreditCard },
+          ].map(tab => {
+            const Icon = tab.icon;
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setMobileMenuOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all ${
+                  active ? 'bg-blue-600 text-white shadow-sm font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </nav>
         <div className="p-4 border-t">
-          <button onClick={onLogout} className="w-full text-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+          <button onClick={onLogout} className="w-full text-center px-4 py-2.5 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 rounded-xl text-sm font-medium transition-colors">
             Logout
           </button>
         </div>
-      </div>
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-8 ml-64 overflow-y-auto">
+      <main className="flex-1 p-4 sm:p-6 md:p-8 md:ml-64 overflow-y-auto min-w-0">
         {loading && !stats && !network && vouchers.length === 0 ? (
-          <div className="text-gray-500">Loading...</div>
+          <div className="text-gray-500 text-center py-12">Loading system metrics...</div>
         ) : (
           <>
             {activeTab === 'dashboard' && stats && (
-              <div>
-                <h2 className="text-2xl font-bold mb-6">Overview</h2>
-                <div className="grid grid-cols-3 gap-6 mb-8">
-                  <div className="bg-white p-6 rounded-xl shadow-sm border"><p className="text-sm text-gray-500">Total Vouchers</p><p className="text-3xl font-bold">{stats.total_vouchers}</p></div>
-                  <div className="bg-white p-6 rounded-xl shadow-sm border"><p className="text-sm text-gray-500">Active Sessions</p><p className="text-3xl font-bold text-blue-600">{stats.active_sessions}</p></div>
-                  <div className="bg-white p-6 rounded-xl shadow-sm border"><p className="text-sm text-gray-500">Total Revenue</p><p className="text-3xl font-bold text-green-600">₦{stats.total_revenue}</p></div>
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Overview</h2>
+                  <p className="text-xs sm:text-sm text-gray-500">Real-time captive portal and voucher statistics</p>
                 </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Total Vouchers</p>
+                    <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">{stats.total_vouchers}</p>
+                  </div>
+                  <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <p className="text-xs font-semibold text-blue-500 uppercase tracking-wide">Active Sessions</p>
+                    <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 mt-1">{stats.active_sessions}</p>
+                  </div>
+                  <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <p className="text-xs font-semibold text-emerald-500 uppercase tracking-wide">Total Revenue</p>
+                    <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1">₦{stats.total_revenue}</p>
+                  </div>
+                </div>
+
 
                 {/* Wi-Fi Data Pricing Packages */}
                 <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
@@ -797,7 +852,8 @@ export default function AdminDashboard({ token, onLogout }: { token: string, onL
 
           </>
         )}
-      </div>
+      </main>
+
 
       {/* Plan Creation Modal */}
       {showPlanModal && (
