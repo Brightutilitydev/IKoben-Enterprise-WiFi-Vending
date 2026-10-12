@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getApiBaseUrl } from '@/lib/api';
 import { Activity, CreditCard, Tag, Wifi, Box, ShieldBan, Trash2, Check, Plus, Printer, X, Pencil, PhoneCall, MessageSquare, MapPin } from 'lucide-react';
+
 
 export default function AdminDashboard({ token, onLogout }: { token: string, onLogout: () => void }) {
   const [stats, setStats] = useState<any>(null);
@@ -29,7 +31,7 @@ export default function AdminDashboard({ token, onLogout }: { token: string, onL
   const [voucherFilter, setVoucherFilter] = useState('ALL');
   const [txSearch, setTxSearch] = useState('');
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+  const API_BASE_URL = getApiBaseUrl();
 
   const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {

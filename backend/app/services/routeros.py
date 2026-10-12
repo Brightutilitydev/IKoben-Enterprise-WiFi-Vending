@@ -26,7 +26,7 @@ class RouterOSService:
             password=self.password,
             host=self.host,
             port=self.port,
-            timeout=10.0
+            timeout=2.0
         )
 
     def _sync_provision_hotspot_user(self, pin: str, limit_bytes: Optional[int], limit_uptime: Optional[int], profile: str) -> bool:

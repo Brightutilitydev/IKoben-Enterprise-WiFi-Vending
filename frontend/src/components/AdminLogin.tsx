@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getApiBaseUrl } from '@/lib/api';
 
 export default function AdminLogin({ onLogin }: { onLogin: (token: string) => void }) {
   const [username, setUsername] = useState('');
@@ -14,7 +15,7 @@ export default function AdminLogin({ onLogin }: { onLogin: (token: string) => vo
     setError('');
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      const API_BASE_URL = getApiBaseUrl();
       const formData = new URLSearchParams();
       formData.append('username', username);
       formData.append('password', password);
